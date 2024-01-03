@@ -1,0 +1,25 @@
+{
+  "name": "techno/framework",
+  "type": "library",
+  "minimum-stability": "stable",
+  "license": "Unlicense",
+  "require": {
+    "php": ">=8.3",
+    "m1/env": "^2.2",
+    "psr/container": "^2.0",
+    "symfony/http-foundation": "^7.0"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.45"
+  },
+  "autoload": {
+    "psr-4": {
+      "Techno\\Framework\\": "src/"
+    }
+  },
+  "scripts": {
+    "style": [
+      "vendor/bin/php-cs-fixer fix . --allow-risky=yes"
+    ]
+  }
+}
