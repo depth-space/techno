@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Techno\Framework;
+namespace Depth\Techno;
 
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use Depth\Techno\Exceptions\RouteNotFoundException;
+use Depth\Techno\Exceptions\RouterException;
 use Symfony\Component\HttpFoundation\Response;
-use Techno\Framework\Exceptions\RouteNotFoundException;
 
 use function array_key_exists;
 
@@ -22,12 +20,7 @@ final readonly class Router
         $this->routes = require $router_path;
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws RouteNotFoundException
-     * @throws NotFoundExceptionInterface
-     */
-    public function resolve(ContainerInterface $container): Response
+    public function resolve(Container $container): Response
     {
         $link = explode('/', $_SERVER['REQUEST_URI'] ?? '');
         $link = explode('?', $link[1]);
@@ -39,6 +32,10 @@ final readonly class Router
 
         $handler = $container->get($this->routes[$link]);
 
-        return $handler($container);
+        if (!$handler instanceof HttpHandler) {
+            throw new RouterException('Cannot use '.$handler::class.' as HttpHandler');
+        }
+
+        return $handler();
     }
 }
