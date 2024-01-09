@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Techno\Framework;
+namespace Depth\Techno;
 
+use Depth\Techno\Exceptions\EnvNotFoundException;
 use M1\Env\Parser;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use Techno\Framework\Exceptions\RouteNotFoundException;
 
 final readonly class App
 {
     private Router $router;
     private Container $container;
 
-    public function __construct(string $env_path, string $router_path)
-    {
+    public function __construct(
+        string $env_path = __DIR__.'/.env',
+        string $router_path = __DIR__.'/routes.php',
+    ) {
         error_reporting(0);
 
         $this->loadEnv($env_path);
@@ -23,11 +23,6 @@ final readonly class App
         $this->router = new Router($router_path);
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws RouteNotFoundException
-     * @throws NotFoundExceptionInterface
-     */
     public function run(): void
     {
         if ($_ENV['DEBUG'] ?? false) {
@@ -39,7 +34,13 @@ final readonly class App
 
     private function loadEnv(string $env_path): void
     {
-        foreach (Parser::parse(file_get_contents($env_path)) as $key => $value) {
+        $contents = file_get_contents($env_path);
+
+        if (false === $contents) {
+            throw new EnvNotFoundException();
+        }
+
+        foreach (Parser::parse($contents) as $key => $value) {
             $_ENV[$key] = $value;
         }
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Techno\Framework\Exceptions;
+namespace Depth\Techno\Exceptions;
 
 use Exception;
 use Psr\Container\NotFoundExceptionInterface;

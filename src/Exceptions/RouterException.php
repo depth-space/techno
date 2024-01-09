@@ -6,4 +6,4 @@ namespace Depth\Techno\Exceptions;
 
 use Exception;
 
-final class RouteNotFoundException extends Exception {}
+final class RouterException extends Exception {}

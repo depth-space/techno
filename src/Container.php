@@ -2,28 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Techno\Framework;
+namespace Depth\Techno;
 
-use Psr\Container\ContainerExceptionInterface;
+use Depth\Techno\Exceptions\ServiceNotFoundException;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;
 use ReflectionException;
-use Techno\Framework\Exceptions\ServiceNotFoundException;
+use ReflectionNamedType;
 
-use function is_callable;
+use function array_key_exists;
 
 final class Container implements ContainerInterface
 {
+    /**
+     * @var array<class-string, object>
+     */
     private array $services = [];
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws ReflectionException
-     * @throws ContainerExceptionInterface
-     * @throws ServiceNotFoundException
+     * @param class-string $id
      */
-    public function get(string $id)
+    public function get(string $id): object
     {
         $item = $this->resolve($id);
         if (!$item instanceof ReflectionClass) {
@@ -33,6 +32,9 @@ final class Container implements ContainerInterface
         return $this->getInstance($item);
     }
 
+    /**
+     * @param class-string $id
+     */
     public function has(string $id): bool
     {
         try {
@@ -45,51 +47,47 @@ final class Container implements ContainerInterface
             return $item->isInstantiable();
         }
 
-        return isset($item);
+        return true;
     }
 
-    public function set(string $key, mixed $value): self
+    /**
+     * @param class-string $id
+     */
+    public function set(string $id, object $value): self
     {
-        $this->services[$key] = $value;
+        $this->services[$id] = $value;
 
         return $this;
     }
 
     /**
-     * @throws ServiceNotFoundException
+     * @param class-string $id
      */
-    private function resolve(string $id)
+    private function resolve(string $id): object
     {
-        try {
-            $name = $id;
-            if (isset($this->services[$id])) {
-                $name = $this->services[$id];
-                if (is_callable($name)) {
-                    return $name();
-                }
-            }
+        if (array_key_exists($id, $this->services)) {
+            return $this->services[$id];
+        }
 
-            return new ReflectionClass($name);
+        try {
+            return new ReflectionClass($id);
+            // @phpstan-ignore-next-line
         } catch (ReflectionException $e) {
             throw new ServiceNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
     /**
-     * @throws ReflectionException
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @param ReflectionClass<object> $item
      */
-    private function getInstance(ReflectionClass $item)
+    private function getInstance(ReflectionClass $item): object
     {
-        $constructor = $item->getConstructor();
-        if (null === $constructor || 0 === $constructor->getNumberOfRequiredParameters()) {
-            return $item->newInstance();
-        }
-
         $params = [];
-        foreach ($constructor->getParameters() as $param) {
-            if ($type = $param->getType()) {
+
+        foreach ($item->getConstructor()?->getParameters() ?? [] as $param) {
+            $type = $param->getType();
+            if ($type instanceof ReflectionNamedType) {
+                // @phpstan-ignore-next-line
                 $params[] = $this->get($type->getName());
             }
         }
