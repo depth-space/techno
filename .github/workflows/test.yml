@@ -1,0 +1,12 @@
+on: [push, pull_request]
+name: Test
+jobs:
+  phpstan:
+    name: PHP-CS-Fixer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: PHP-CS-Fixer
+        uses: docker://oskarstark/phpstan-ga
+        with:
+          args: analyse -c phpstan.neon
