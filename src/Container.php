@@ -69,6 +69,10 @@ final class Container implements ContainerInterface
             return $this->services[$id];
         }
 
+        if (self::class === $id) {
+            return $this;
+        }
+
         try {
             return new ReflectionClass($id);
             // @phpstan-ignore-next-line

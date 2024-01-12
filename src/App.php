@@ -9,18 +9,16 @@ use M1\Env\Parser;
 
 final readonly class App
 {
-    private Router $router;
     private Container $container;
 
     public function __construct(
         string $env_path = __DIR__.'/.env',
-        string $router_path = __DIR__.'/routes.php',
+        private string $router_path = __DIR__.'/routes.php',
     ) {
         error_reporting(0);
 
         $this->loadEnv($env_path);
         $this->container = new Container();
-        $this->router = new Router($router_path);
     }
 
     public function run(): void
@@ -29,7 +27,9 @@ final readonly class App
             error_reporting(1);
         }
 
-        $this->router->resolve($this->container)->send();
+        /** @var Router $router */
+        $router = $this->container->get(Router::class);
+        $router->resolve($this->router_path)->send();
     }
 
     private function loadEnv(string $env_path): void
