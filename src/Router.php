@@ -15,24 +15,24 @@ final readonly class Router
     /** @var string[] */
     public array $path;
 
-    /** @var array<string, class-string> */
-    private array $routes;
-
-    public function __construct(string $router_path)
-    {
-        $this->routes = require $router_path;
+    public function __construct(
+        private Container $container,
+    ) {
         $this->path = explode('/', trim(explode('?', $_SERVER['REQUEST_URI'] ?? '')[0], '/'));
     }
 
-    public function resolve(Container $container): Response
+    public function resolve(string $router_path): Response
     {
+        /** @var array<string, class-string> */
+        $routes = require $router_path;
+
         $link = "{$_SERVER['REQUEST_METHOD']} /{$this->path[0]}";
 
-        if (!array_key_exists($link, $this->routes)) {
+        if (!array_key_exists($link, $routes)) {
             throw new RouteNotFoundException();
         }
 
-        $handler = $container->get($this->routes[$link]);
+        $handler = $this->container->get($routes[$link]);
 
         if (!$handler instanceof HttpHandler) {
             throw new RouterException('Cannot use '.$handler::class.' as HttpHandler');
