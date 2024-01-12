@@ -21,6 +21,9 @@ final class Container implements ContainerInterface
 
     /**
      * @param class-string $id
+     *
+     * @throws ServiceNotFoundException
+     * @throws ReflectionException
      */
     public function get(string $id): object
     {
@@ -62,6 +65,8 @@ final class Container implements ContainerInterface
 
     /**
      * @param class-string $id
+     *
+     * @throws ServiceNotFoundException
      */
     private function resolve(string $id): object
     {
@@ -83,6 +88,9 @@ final class Container implements ContainerInterface
 
     /**
      * @param ReflectionClass<object> $item
+     *
+     * @throws ServiceNotFoundException
+     * @throws ReflectionException
      */
     private function getInstance(ReflectionClass $item): object
     {
