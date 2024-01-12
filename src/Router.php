@@ -12,19 +12,21 @@ use function array_key_exists;
 
 final readonly class Router
 {
+    /** @var string[] */
+    public array $path;
+
     /** @var array<string, class-string> */
     private array $routes;
 
     public function __construct(string $router_path)
     {
         $this->routes = require $router_path;
+        $this->path = explode('/', trim(explode('?', $_SERVER['REQUEST_URI'] ?? '')[0], '/'));
     }
 
     public function resolve(Container $container): Response
     {
-        $link = explode('/', $_SERVER['REQUEST_URI'] ?? '');
-        $link = explode('?', $link[1]);
-        $link = "{$_SERVER['REQUEST_METHOD']} /{$link[0]}";
+        $link = "{$_SERVER['REQUEST_METHOD']} /{$this->path[0]}";
 
         if (!array_key_exists($link, $this->routes)) {
             throw new RouteNotFoundException();
