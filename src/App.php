@@ -13,7 +13,7 @@ use ReflectionException;
 
 final readonly class App
 {
-    private Container $container;
+    public Container $container;
 
     /**
      * @throws EnvNotFoundException
