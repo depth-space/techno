@@ -20,12 +20,14 @@ final readonly class App
      */
     public function __construct(
         string $env_path = '.env',
-        private string $router_path = 'routes.php',
+        string $routes_path = 'routes.php',
     ) {
         error_reporting(0);
 
-        $this->loadEnv($env_path);
         $this->container = new Container();
+
+        $this->loadEnv($env_path);
+        $this->loadRoutes($routes_path);
     }
 
     /**
@@ -42,7 +44,7 @@ final readonly class App
 
         /** @var Router $router */
         $router = $this->container->get(Router::class);
-        $router->resolve($this->router_path)->send();
+        $router->resolve()->send();
     }
 
     /**
@@ -59,5 +61,12 @@ final readonly class App
         foreach (Parser::parse($contents) as $key => $value) {
             $_ENV[$key] = $value;
         }
+    }
+
+    private function loadRoutes(string $routes_path): void
+    {
+        /** @var Router $router */
+        $router = $this->container->get(Router::class);
+        $router->loadRoutes($routes_path);
     }
 }
