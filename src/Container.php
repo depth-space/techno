@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Depth\Techno;
+namespace Techno\Framework;
 
-use Depth\Techno\Exceptions\ServiceNotFoundException;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
+use Techno\Framework\Exceptions\ServiceNotFoundException;
 
 use function array_key_exists;
 

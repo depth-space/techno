@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Depth\Techno;
+namespace Techno\Framework;
 
-use Depth\Techno\Exceptions\EnvNotFoundException;
-use Depth\Techno\Exceptions\RouteNotFoundException;
-use Depth\Techno\Exceptions\RouterException;
-use Depth\Techno\Exceptions\ServiceNotFoundException;
 use M1\Env\Parser;
 use ReflectionException;
+use Techno\Framework\Exceptions\EnvNotFoundException;
+use Techno\Framework\Exceptions\RouteNotFoundException;
+use Techno\Framework\Exceptions\RouterException;
+use Techno\Framework\Exceptions\ServiceNotFoundException;
 
 final readonly class App
 {
@@ -19,8 +19,8 @@ final readonly class App
      * @throws EnvNotFoundException
      */
     public function __construct(
-        string $env_path = __DIR__.'/.env',
-        private string $router_path = __DIR__.'/routes.php',
+        string $env_path = '.env',
+        private string $router_path = 'routes.php',
     ) {
         error_reporting(0);
 

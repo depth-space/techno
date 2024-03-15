@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Depth\Techno\Exceptions;
+namespace Techno\Framework\Exceptions;
 
 use Exception;
 

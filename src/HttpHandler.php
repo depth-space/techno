@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Depth\Techno;
+namespace Techno\Framework;
 
 use Symfony\Component\HttpFoundation\Response;
 

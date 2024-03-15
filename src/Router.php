@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Depth\Techno;
+namespace Techno\Framework;
 
-use Depth\Techno\Exceptions\RouteNotFoundException;
-use Depth\Techno\Exceptions\RouterException;
-use Depth\Techno\Exceptions\ServiceNotFoundException;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Response;
+use Techno\Framework\Exceptions\RouteNotFoundException;
+use Techno\Framework\Exceptions\RouterException;
+use Techno\Framework\Exceptions\ServiceNotFoundException;
 
 use function array_key_exists;
 
